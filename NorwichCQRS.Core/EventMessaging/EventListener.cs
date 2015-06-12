@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NorwichCQRS.Core
+namespace NorwichCQRS.Core.EventMessaging
 {
     public class EventListener : IListener
     {

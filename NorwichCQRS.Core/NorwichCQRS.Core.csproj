@@ -48,6 +48,7 @@
     <Compile Include="CommandMessaging\Command.cs" />
     <Compile Include="CommandMessaging\CommandHandler.cs" />
     <Compile Include="CommandMessaging\CommandListener.cs" />
+    <Compile Include="EventMessaging\EventBase.cs" />
     <Compile Include="EventMessaging\EventListener.cs" />
     <Compile Include="EventSourcedAggregateRoot.cs" />
     <Compile Include="CommandMessaging\InMemoryCommandBus.cs" />

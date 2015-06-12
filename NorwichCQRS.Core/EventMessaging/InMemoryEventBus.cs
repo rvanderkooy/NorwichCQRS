@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NorwichCQRS.Core.Messaging
+namespace NorwichCQRS.Core.EventMessaging
 {
     public class InMemoryEventBus : IEventBus
     {
