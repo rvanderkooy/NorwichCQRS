@@ -8,7 +8,6 @@ namespace NorwichCQRS.Infrastructure
 {
     public interface IAggregateRoot
     {
-        int Version { get; set; }
-        DateTime DateTime { get; set; }
+        
     }
 }

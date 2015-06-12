@@ -12,17 +12,10 @@ namespace NorwichCQRS.Core
 {
     public class AggregateRoot : IAggregateRoot
     {
-        protected IDateTimeProvider DateTimeProvider { get; set; }
-        public int Version { get; set; }
-
-        public DateTime DateTime { get; set; }
-
         private Queue EventQueue { get; set; }
 
-        public AggregateRoot(IDateTimeProvider dateTimeProvider)
+        public AggregateRoot()
         {
-            this.DateTimeProvider = dateTimeProvider;
-
             this.EventQueue = new Queue();
         }
 

@@ -22,7 +22,6 @@ namespace NorwichCQRS.Core
         protected List<AggregateEvent> UncommittedEvents { get; set; }
 
         public EventSourcedAggregateRoot(Guid aggregateGuid, IEventStore eventStore, IEventBus eventBus, IDateTimeProvider dateTimeProvider)
-            : base(dateTimeProvider)
         {
             if (eventStore == null)
             {
