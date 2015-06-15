@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Denormalization\IQueryHandler.cs" />
     <Compile Include="IAggregateEvent.cs" />
     <Compile Include="IAggregateRoot.cs" />
     <Compile Include="CommandMessaging\ICommand.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\IDateTimeProvider.cs" />
     <Compile Include="Providers\IIdProvider.cs" />
+    <Compile Include="Providers\ISessionProvider.cs" />
     <Compile Include="ServicePresenters\IServicePresenter.cs" />
     <Compile Include="ServiceViews\IServiceView.cs" />
   </ItemGroup>
