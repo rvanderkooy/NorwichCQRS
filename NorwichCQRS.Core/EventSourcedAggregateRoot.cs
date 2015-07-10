@@ -22,6 +22,16 @@ namespace NorwichCQRS.Core
 
         protected List<AggregateEvent> UncommittedEvents { get; set; }
 
+        protected IDateTimeProvider DateTimeProvider { get; set; }
+
+        protected IEventBus EventBus
+        {
+            get
+            {
+                return _eventBus;
+            }
+        }
+
         public EventSourcedAggregateRoot(Guid aggregateGuid, IEventStore eventStore, IEventBus eventBus, IDateTimeProvider dateTimeProvider)
         {
             if (eventStore == null)
@@ -32,9 +42,15 @@ namespace NorwichCQRS.Core
             {
                 throw new ArgumentNullException("EventBus cannot be null.");
             }
+            if (dateTimeProvider == null)
+            {
+                throw new ArgumentNullException("DateTimeProvider cannot be null.");
+            }
 
             _eventStore = eventStore;
             _eventBus = eventBus;
+
+            this.DateTimeProvider = dateTimeProvider;
 
             this.AggregateGuid = aggregateGuid;
 
@@ -67,11 +83,12 @@ namespace NorwichCQRS.Core
                         Trace.WriteLine("Applying Event");
 
                         this.Apply(@event, false);
-                    }catch(Exception ex)
+                    }
+                    catch (Exception ex)
                     {
                         Trace.WriteLine(string.Format("Error occurred deserializing and applying event: {0} | {1} | {2}", ex.Message, ex.StackTrace, ex.InnerException));
                         throw;
-                    }                    
+                    }
                 }
             }
             catch (Exception ex)
