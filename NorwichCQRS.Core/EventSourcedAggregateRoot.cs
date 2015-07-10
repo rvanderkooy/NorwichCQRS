@@ -61,11 +61,16 @@ namespace NorwichCQRS.Core
                     Trace.WriteLine(string.Format("Loaded type: {0}", eventType.FullName));
 
                     Trace.WriteLine(string.Format("Deserializing: {0}, for eventType: {1}", aggregateEvent.EventValue, eventType));
-                    dynamic @event = JsonConvert.DeserializeObject(aggregateEvent.EventValue, eventType);
+                    try
+                    {
+                        dynamic @event = JsonConvert.DeserializeObject(aggregateEvent.EventValue, eventType);
+                        Trace.WriteLine("Applying Event");
 
-                    Trace.WriteLine("Applying Event");
-
-                    this.Apply(@event, false);
+                        this.Apply(@event, false);
+                    }catch(Exception ex)
+                    {
+                        Trace.WriteLine("Error occurred deserializing and applying event");
+                    }                    
                 }
             }
             catch (Exception ex)
