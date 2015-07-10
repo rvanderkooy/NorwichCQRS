@@ -69,7 +69,7 @@ namespace NorwichCQRS.Core
                         this.Apply(@event, false);
                     }catch(Exception ex)
                     {
-                        Trace.WriteLine("Error occurred deserializing and applying event");
+                        Trace.WriteLine(string.Format("Error occurred deserializing and applying event: {0} | {1} | {2}", ex.Message, ex.StackTrace, ex.InnerException));
                     }                    
                 }
             }
@@ -81,7 +81,7 @@ namespace NorwichCQRS.Core
 
         protected void Apply(IEvent @event, bool isNew)
         {
-            Trace.WriteLine("In Apply(event: {0}, isNew: {1}");
+            Trace.WriteLine("In Apply(event: {0}, isNew: {1})");
             if (isNew)
             {
                 this.QueueEvent<IEvent>(@event);
