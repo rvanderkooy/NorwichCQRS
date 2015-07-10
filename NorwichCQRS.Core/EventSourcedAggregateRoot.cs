@@ -70,12 +70,14 @@ namespace NorwichCQRS.Core
                     }catch(Exception ex)
                     {
                         Trace.WriteLine(string.Format("Error occurred deserializing and applying event: {0} | {1} | {2}", ex.Message, ex.StackTrace, ex.InnerException));
+                        throw;
                     }                    
                 }
             }
             catch (Exception ex)
             {
                 Trace.WriteLine(string.Format("Error occurred in EventSourcedAggregateRoot.Initialize(aggregateGuid: {0})...{1}", aggregateGuid.ToString(), ex.ToString()));
+                throw;
             }
         }
 
@@ -105,6 +107,7 @@ namespace NorwichCQRS.Core
             catch (Exception ex)
             {
                 Trace.WriteLine("Error occurred calling When(event): {0}", ex.ToString());
+                throw;
             }
 
             Trace.WriteLine("Apply completed");
@@ -168,6 +171,7 @@ namespace NorwichCQRS.Core
             catch (Exception ex)
             {
                 Trace.WriteLine(string.Format("Error occurred in GetType(typeName: {0})...{1}", typeName, ex.ToString()));
+                throw;
             }
             return null;
         }
