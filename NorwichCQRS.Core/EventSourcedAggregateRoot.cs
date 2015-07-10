@@ -47,20 +47,28 @@ namespace NorwichCQRS.Core
 
         protected void Initialize(Guid aggregateGuid)
         {
-            Trace.WriteLine(string.Format("Initializing EventSoucedAggregateRoot for AggregateGuid: {0}", aggregateGuid.ToString()));
             try
             {
+                Trace.WriteLine(string.Format("Initializing EventSoucedAggregateRoot for AggregateGuid: {0}", aggregateGuid.ToString()));
                 IEnumerable<IAggregateEvent> aggregateEventHistory = _eventStore.LoadAggregate(aggregateGuid);
+                Trace.WriteLine(string.Format("Loaded {0} IAggregateEvents for AggregateGuid: {1}", aggregateEventHistory.Count(), aggregateGuid.ToString()));
 
                 foreach (IAggregateEvent aggregateEvent in aggregateEventHistory)
                 {
+                    Trace.WriteLine(string.Format("Preparing to deserialize EventType: {0}", aggregateEvent.EventType));
                     Type eventType = FindType(aggregateEvent.EventType);
 
+                    Trace.WriteLine(string.Format("Loaded type: {0}", eventType.FullName));
+
+                    Trace.WriteLine(string.Format("Deserializing: {0}, for eventType: {1}", aggregateEvent.EventValue, eventType));
                     dynamic @event = JsonConvert.DeserializeObject(aggregateEvent.EventValue, eventType);
+
+                    Trace.WriteLine("Applying Event");
 
                     this.Apply(@event, false);
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Trace.WriteLine(string.Format("Error occurred in EventSourcedAggregateRoot.Initialize(aggregateGuid: {0})...{1}", aggregateGuid.ToString(), ex.ToString()));
             }
@@ -68,6 +76,7 @@ namespace NorwichCQRS.Core
 
         protected void Apply(IEvent @event, bool isNew)
         {
+            Trace.WriteLine("In Apply(event: {0}, isNew: {1}");
             if (isNew)
             {
                 this.QueueEvent<IEvent>(@event);
@@ -83,7 +92,17 @@ namespace NorwichCQRS.Core
                 this.UncommittedEvents.Add(aggregateEvent);
             }
 
-            ((dynamic)this).When((dynamic)@event);
+            Trace.WriteLine("Calling When(event) for Aggregate");
+            try
+            {
+                ((dynamic)this).When((dynamic)@event);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine("Error occurred calling When(event): {0}", ex.ToString());
+            }
+
+            Trace.WriteLine("Apply completed");
         }
 
         protected void SaveAndPublishEvents()
@@ -97,27 +116,53 @@ namespace NorwichCQRS.Core
 
         protected static Type FindType(string typeName)
         {
+            Trace.WriteLine(string.Format("In FindType(typeName: {0})", typeName));
+
             if (_eventTypes.ContainsKey(typeName))
             {
+                Trace.WriteLine(string.Format("Found key for {0}", typeName));
                 return _eventTypes[typeName];
             }
 
+            Trace.WriteLine(string.Format("Unable to find key for {0}", typeName));
             Type type = GetType(typeName);
 
+            Trace.WriteLine(string.Format("Received Type: {0}...adding to EventTypes", typeName));
             _eventTypes.Add(typeName, type);
 
+            Trace.WriteLine(string.Format("Returning Type: {0}", type.FullName));
             return type;
         }
 
         protected static Type GetType(string typeName)
         {
-            var type = Type.GetType(typeName);
-            if (type != null) return type;
-            foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
+            Trace.WriteLine(string.Format("In GetType(typeName: {0})", typeName));
+            try
             {
-                type = a.GetType(typeName);
+                Trace.WriteLine(string.Format("Attempting Type.GetType(typeName: {0})", typeName));
+                var type = Type.GetType(typeName);
+
                 if (type != null)
+                {
+                    Trace.WriteLine(string.Format("Loaded type: {0}...returning", type.FullName));
                     return type;
+                }
+
+                Trace.WriteLine("Iterating assemblies in AppDomain.CurrentDomain.GetAssemblies()");
+                foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
+                {
+                    Trace.WriteLine(string.Format("Attempting a: {0}.GetType(typeName: {1})", a.FullName, typeName));
+                    type = a.GetType(typeName);
+                    if (type != null)
+                    {
+                        Trace.WriteLine(string.Format("Loaded type: {0}...in assembly: {1}...returning", type.FullName, a.FullName));
+                        return type;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(string.Format("Error occurred in GetType(typeName: {0})...{1}", typeName, ex.ToString()));
             }
             return null;
         }
