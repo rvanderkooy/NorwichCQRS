@@ -48,16 +48,21 @@ namespace NorwichCQRS.Core
         protected void Initialize(Guid aggregateGuid)
         {
             Trace.WriteLine(string.Format("Initializing EventSoucedAggregateRoot for AggregateGuid: {0}", aggregateGuid.ToString()));
-
-            IEnumerable<IAggregateEvent> aggregateEventHistory = _eventStore.LoadAggregate(aggregateGuid);
-
-            foreach (IAggregateEvent aggregateEvent in aggregateEventHistory)
+            try
             {
-                Type eventType = FindType(aggregateEvent.EventType);
-                
-                dynamic @event = JsonConvert.DeserializeObject(aggregateEvent.EventValue, eventType);
-              
-                this.Apply(@event, false);                
+                IEnumerable<IAggregateEvent> aggregateEventHistory = _eventStore.LoadAggregate(aggregateGuid);
+
+                foreach (IAggregateEvent aggregateEvent in aggregateEventHistory)
+                {
+                    Type eventType = FindType(aggregateEvent.EventType);
+
+                    dynamic @event = JsonConvert.DeserializeObject(aggregateEvent.EventValue, eventType);
+
+                    this.Apply(@event, false);
+                }
+            }catch(Exception ex)
+            {
+                Trace.WriteLine(string.Format("Error occurred in EventSourcedAggregateRoot.Initialize(aggregateGuid: {0})...{1}", aggregateGuid.ToString(), ex.ToString()));
             }
         }
 
