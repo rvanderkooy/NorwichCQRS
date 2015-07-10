@@ -10,23 +10,7 @@ using System.Threading.Tasks;
 namespace NorwichCQRS.Core.EventMessaging
 {
     public class EventBase : IEvent
-    {
-        private IDateTimeProvider _dateTimeProvider;
-       
-        private Nullable<DateTime> _dateTime;
-
-        public DateTime DateTime
-        {
-            get { return _dateTime ?? _dateTimeProvider.CurrentDateTime; }
-            set
-            {
-                _dateTime = value;
-            }
-        }
-
-        public EventBase(IDateTimeProvider dateTimeProvider)
-        {
-            _dateTimeProvider = dateTimeProvider;
-        }
+    {               
+        public DateTime DateTime { get; set; }        
     }
 }
