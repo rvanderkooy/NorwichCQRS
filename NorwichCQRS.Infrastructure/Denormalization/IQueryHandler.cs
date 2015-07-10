@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NorwichCQRS.Infrastructure.Denormalization
 {
-    interface IQueryHandler
+    public interface IQueryHandler
     {
     }
 }

@@ -55,6 +55,7 @@
     <Compile Include="EventMessaging\InMemoryEventBus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\DateTimeProvider.cs" />
+    <Compile Include="Providers\DilatingDateTimeProvider.cs" />
     <Compile Include="Providers\GuidIDProvider.cs" />
     <Compile Include="ServicePresenters\ServicePresenter.cs" />
     <Compile Include="ServiceViews\ServiceView.cs" />
