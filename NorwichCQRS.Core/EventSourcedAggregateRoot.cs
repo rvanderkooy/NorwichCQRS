@@ -5,6 +5,7 @@ using NorwichCQRS.Infrastructure.Persistence;
 using NorwichCQRS.Infrastructure.Providers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -46,6 +47,8 @@ namespace NorwichCQRS.Core
 
         protected void Initialize(Guid aggregateGuid)
         {
+            Trace.WriteLine(string.Format("Initializing EventSoucedAggregateRoot for AggregateGuid: {0}", aggregateGuid.ToString()));
+
             IEnumerable<IAggregateEvent> aggregateEventHistory = _eventStore.LoadAggregate(aggregateGuid);
 
             foreach (IAggregateEvent aggregateEvent in aggregateEventHistory)
