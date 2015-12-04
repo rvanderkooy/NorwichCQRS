@@ -9,6 +9,6 @@ namespace NorwichCQRS.Infrastructure.Persistence
     public interface IEventStore
     {
         IEnumerable<IAggregateEvent> LoadAggregate(Guid aggregateGuid);
-        void SaveChanges(IEnumerable<IAggregateEvent> uncommittedEvents);
+        void SaveChanges(Type aggregateType, IEnumerable<IAggregateEvent> uncommittedEvents);
     }
 }

@@ -132,7 +132,7 @@ namespace NorwichCQRS.Core
 
         protected void SaveAndPublishEvents()
         {
-            _eventStore.SaveChanges(this.UncommittedEvents);
+            _eventStore.SaveChanges(this.GetType(), this.UncommittedEvents);
 
             this.UncommittedEvents.Clear();
 
