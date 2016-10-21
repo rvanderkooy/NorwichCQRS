@@ -15,6 +15,8 @@ namespace NorwichCQRS.Core
     public class EventSourcedAggregateRoot : AggregateRoot, IEventSourcedAggregateRoot
     {
         public Guid AggregateGuid { get; internal set; }
+        public int Version { get; private set; }
+
         private IEventStore _eventStore;
         private IEventBus _eventBus;
 
@@ -100,7 +102,7 @@ namespace NorwichCQRS.Core
 
         protected void Apply(IEvent @event, bool isNew)
         {
-            Trace.WriteLine("In Apply(event: {0}, isNew: {1})");
+            Trace.WriteLine(string.Format("In Apply(event: {0}, isNew: {1})", @event.GetType().ToString(), isNew));
             if (isNew)
             {
                 this.QueueEvent<IEvent>(@event);
@@ -117,6 +119,10 @@ namespace NorwichCQRS.Core
             }
 
             Trace.WriteLine("Calling When(event) for Aggregate");
+
+            // Increment the version
+            this.Version++;
+
             try
             {
                 ((dynamic)this).When((dynamic)@event);
